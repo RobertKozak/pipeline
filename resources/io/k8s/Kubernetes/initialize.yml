@@ -1,0 +1,22 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ${Namespace}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${ServiceName}
+  namespace: ${Namespace}
+  labels:
+    service: ${ServiceName}
+spec:
+  type: ${ServiceType}
+  ports:
+  - protocol: TCP
+    port: ${Port}
+    ${ServicePortTemplate}
+  selector:
+    service: ${ServiceName}

@@ -1,0 +1,41 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: ${ServiceName}
+  namespace: ${Namespace}
+  labels: ${LabelsTemplate}
+spec:
+  replicas: ${Replicas}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels: ${ContainerLabelsTemplate}
+    spec:
+      containers:
+      - env:
+        name: ${ServiceName}  
+        image: ${DockerRepo}${ImageName}:${ImageTag}
+        imagePullPolicy: ${ImagePullPolicy}
+        $ReadinessProbeTemplate
+        $LivenessProbeTemplate
+        $ConfigurationTemplate
+        $TestDataTemplate
+        $VolumeMountsTemplate
+        ports:
+        - containerPort: ${Port}
+        resources:
+          requests:
+            cpu: ${ResourceRequest.CPU}
+            memory: ${ResourceRequest.Memory}
+          limits:
+            cpu: ${ResourceLimit.CPU}
+            memory: ${ResourceLimit.Memory}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: dockerkey
+      $VolumesTemplate
+
